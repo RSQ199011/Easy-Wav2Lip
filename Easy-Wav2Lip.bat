@@ -1,66 +1,66 @@
-@echo off
-title Easy-Wav2Lip
-setlocal enabledelayedexpansion
+@回声关闭
+标题 Easy-Wav2Lip
+setlocal 启用延迟扩展
 cd /d "%~dp0"
-echo Welcome to Easy-Wav2Lip^^!
+echo 欢迎来到 Easy-Wav2Lip^^！
 
 
-:check_GPU
-::check if Nvidia GPU is installed
-wmic path win32_VideoController get name | findstr /C:"NVIDIA" >nul
-if errorlevel 1 (
-	echo NVIDIA GPU has not been detected - This requires an Nvidia GPU as it needs CUDA!
-	echo If you do have one installed, try updating your drivers.
-	pause
-	goto :eof
-)
-::check if driver is new enough to have a new enough cuda
-for /f "tokens=*" %%i in ('nvidia-smi --query-gpu=driver_version --format=csv') do set "driver_version=%%i"
-set "major_version=%driver_version:~0,3%"
-set "major_version=%major_version:.=%"
-if not %major_version% gtr 528 (
-    echo Your Nvidia drivers aren't up to date - please update them before continuing!
-	pause
-	goto :eof
-)
+:检查_GPU
+::检查是否安装了Nvidia GPU
+wmic 路径 win32_VideoController 获取名称 | findstr /C:"NVIDIA" >nul
+如果错误级别 1 (
+	echo 未检测到 NVIDIA GPU - 这需要 Nvidia GPU，因为它需要 CUDA！
+	echo 如果您确实安装了驱动程序，请尝试更新您的驱动程序。
+	暂停
+	转到：eof
+）
+::检查驱动程序是否足够新以拥有足够新的cuda
+for ('nvidia-smi --query-gpu=driver_version --format=csv') 中的 /f "tokens=*" %%i 设置 "driver_version=%%i"
+“主要版本=％驱动程序版本：〜0,3％”
+“设置主要版本=%主要版本:.=%”
+如果不是 %major_version% gtr 528 (
+    echo 您的 Nvidia 驱动程序不是最新的 - 请在继续更新之前！
+	暂停
+	转到：eof
+）
 
-:: Check if Easy-Wav2Lip folder exists
-if not exist "Easy-Wav2Lip" (
-	set firstinstall="True"
-	echo Create folders "Easy-Wav2Lip" and "Easy-Wav2Lip-venv" here and install Easy-Wav2Lip %latest_version%?
-	echo You will need around 7GB of free space and consider the time it will take you to download that on your connection.
-	echo There may be freezes in the cmd for several minutes at a time, this is normal.
-	pause
-	mkdir "Easy-Wav2Lip"
-	mkdir "Easy-Wav2Lip\firstinstall"
-	echo Proceeding with install
-) else (
-	set firstinstall="False"
-)
+:: 检查 Easy-Wav2Lip 文件夹是否存在
+如果不存在“Easy-Wav2Lip”（
+	设置首次安装=“真”
+	echo 在此处创建文件夹“Easy-Wav2Lip”和“Easy-Wav2Lip-venv”并安装Easy-Wav2Lip %latest_version%？
+	echo 您将需要大约 7GB 的可用空间，并考虑在连接上下载该空间所需的时间。
+	echo cmd 可能会卡住广场，这是正常现象。
+	暂停
+	mkdir“Easy-Wav2Lip”
+	mkdir“Easy-Wav2Lip\firstinstall”
+	echo 继续安装
+） 另外（
+	设置首次安装=“假”
+）
 
-:: Check if Python is installed
-:check_python
-py -3.10 --version >nul 2>&1
-if errorlevel 1 (
-	echo Python 3.10 not installed. Downloading Python 3.10.11.. 29040640 total bytes to download
-	call :install_python
-)
+:: 检查Python是否安装
+:检查Python
+py -3.10 --版本 >nul 2>&1
+如果错误级别 1 (
+	echo Python 3.10 未安装。正在下载 Python 3.10.11.. 总下载字节数为 29040640
+	调用：install_python
+）
 
 :activate_venv
-:: Check if the virtual environment exists and activate it
-IF NOT defined VIRTUAL_ENV (
-	IF EXIST "Easy-Wav2Lip-venv\Scripts\activate.bat" (
-		CALL Easy-Wav2Lip-venv\Scripts\activate.bat
-	) ELSE (
-		echo Creating virtual environment...
+:: 检查虚拟环境是否存在并激活
+如果未定义 VIRTUAL_ENV (
+	如果存在“Easy-Wav2Lip-venv\Scripts\activate.bat”（
+		调用 Easy-Wav2Lip-venv\Scripts\activate.bat
+	） 别的 （
+		echo 创建虚拟环境...
 		py -3.10 -m venv Easy-Wav2Lip-venv
-		CALL Easy-Wav2Lip-venv\Scripts\activate.bat
-	)
-)
+		调用 Easy-Wav2Lip-venv\Scripts\activate.bat
+	）
+）
 
-:: Check if the virtual environment is activated
-IF defined VIRTUAL_ENV (
-	set PATH=%~dp0Easy-Wav2Lip-venv\Scripts;%PATH%
+:: 检查虚拟环境是否激活
+如果定义了 VIRTUAL_ENV (
+	设置 PATH=%~dp0Easy-Wav2Lip-venv\Scripts;%PATH%
 	echo Virtual environment running from %VIRTUAL_ENV%
 ) ELSE (
 	echo Error: Virtual environment is unable to activate.
